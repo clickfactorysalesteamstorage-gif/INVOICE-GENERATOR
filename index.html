@@ -46,6 +46,11 @@
             background-color: #f8fafc;
             border-color: #cbd5e1;
         }
+        /* Style for placeholders to be subtle */
+        ::placeholder {
+            color: #94a3b8;
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen py-2 sm:py-4 px-2 sm:px-4 font-sans text-slate-800 text-[12px]">
@@ -128,9 +133,9 @@
                         <span class="font-semibold text-slate-600">DATE:</span>
                         <input type="date" id="invoice-date" class="font-medium px-1 text-right bg-slate-50 border border-slate-300 rounded">
                     </div>
-                    <div class="flex justify-between items-center gap-2">
+                    <div id="invoice-no-section" class="flex justify-between items-center gap-2">
                         <span class="font-semibold text-slate-600">INVOICE NO.:</span>
-                        <input type="text" id="invoice-no" value="084" class="text-right font-medium px-1 w-24">
+                        <input type="text" id="invoice-no" placeholder="Invoice No." class="text-right font-medium px-1 w-24">
                     </div>
                 </div>
             </div>
@@ -140,13 +145,19 @@
         <div class="mb-4 bg-blue-50 p-3 rounded border border-blue-200 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
                 <span class="text-[10px] font-bold uppercase tracking-wider text-blue-800 block mb-0.5">TO</span>
-                <input type="text" id="client-name" value="POOJA & SUBHANKAR" class="font-bold text-slate-900 w-full text-sm px-1 mb-0.5">
-                <input type="text" id="client-city" value="CHENNAI" class="text-[11px] text-slate-600 w-full px-1">
+                <input type="text" id="client-name" placeholder="client name" class="font-bold text-slate-900 w-full text-sm px-1 mb-0.5">
+                <input type="text" id="client-city" placeholder="client place" class="text-[11px] text-slate-600 w-full px-1">
             </div>
-            <div>
+            <div class="space-y-1">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-blue-800 block mb-0.5">EVENT DETAILS</span>
-                <input type="text" id="event-date" value="EVENT DATE: 13,14 & 15 NOV 2026" class="text-[11px] text-slate-700 font-medium w-full px-1 mb-0.5">
-                <input type="text" id="event-desc" value="EVENT DETAILS: RITUALS, REC & WED" class="text-[11px] text-slate-600 w-full px-1">
+                <div class="flex items-center gap-1 text-[11px]">
+                    <strong class="text-slate-700 w-20 flex-shrink-0">Event Date:</strong>
+                    <input type="text" id="event-date" placeholder="event date" class="font-medium text-slate-700 w-full px-1 bg-white/50 border border-slate-200 rounded">
+                </div>
+                <div class="flex items-center gap-1 text-[11px]">
+                    <strong class="text-slate-700 w-20 flex-shrink-0">Event Details:</strong>
+                    <input type="text" id="event-desc" placeholder="event details" class="font-medium text-slate-600 w-full px-1 bg-white/50 border border-slate-200 rounded">
+                </div>
             </div>
         </div>
 
@@ -182,7 +193,7 @@
             <div class="w-full sm:w-3/5 space-y-2">
                 <div>
                     <span class="text-[11px] font-bold text-slate-700 block mb-0.5">Amount In Words:</span>
-                    <input type="text" id="amount-words" class="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-[11px] italic font-medium text-slate-700">
+                    <input type="text" id="amount-words" placeholder="Amount in words..." class="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-[11px] italic font-medium text-slate-700">
                 </div>
                 
                 <!-- Bank Details -->
@@ -211,7 +222,7 @@
             <div class="w-full sm:w-2/5 space-y-1.5 text-[11px]">
                 <div class="flex justify-between items-center py-1 border-b border-slate-200">
                     <span class="font-semibold text-slate-600">SUBTOTAL</span>
-                    <span id="subtotal-display" class="font-bold text-slate-800">18,000.00</span>
+                    <span id="subtotal-display" class="font-bold text-slate-800">0.00</span>
                 </div>
 
                 <div id="gst-section" class="flex justify-between items-center py-1 border-b border-slate-200">
@@ -225,22 +236,22 @@
                             <option value="0">0%</option>
                         </select>
                     </div>
-                    <span id="gst-display" class="font-bold text-slate-800">3,240.00</span>
+                    <span id="gst-display" class="font-bold text-slate-800">0.00</span>
                 </div>
 
                 <div id="paid-section" class="hidden justify-between items-center py-1 border-b border-slate-200">
                     <span class="font-semibold text-slate-600">TOTAL PAID</span>
-                    <input type="number" step="any" id="total-paid" value="10000.00" onchange="calculateTotals()" class="w-28 text-right font-bold text-slate-800 bg-slate-50 border border-slate-300 rounded px-1">
+                    <input type="number" step="any" id="total-paid" placeholder="0.00" value="0.00" onchange="calculateTotals()" class="w-28 text-right font-bold text-slate-800 bg-slate-50 border border-slate-300 rounded px-1">
                 </div>
 
                 <div class="flex justify-between items-center py-1.5 text-xs font-extrabold bg-blue-950 text-white px-3 rounded">
                     <span id="final-label">GRAND TOTAL</span>
-                    <span id="grand-total-display">21,240.00</span>
+                    <span id="grand-total-display">0.00</span>
                 </div>
 
                 <div id="pending-section" class="hidden justify-between items-center py-1 text-[11px] font-bold bg-amber-100 text-amber-900 px-3 rounded border border-amber-200">
                     <span>PENDING PAYMENT</span>
-                    <span id="pending-display">11,240.00</span>
+                    <span id="pending-display">0.00</span>
                 </div>
             </div>
         </div>
@@ -272,12 +283,25 @@
     <!-- Script Logic -->
     <script>
         let initialItems = [
-            { desc: "Traditional Photography", qty: 1, price: 18000.00 },
-            { desc: "Traditional Videography", qty: 1, price: 0.00 },
-            { desc: "Candid Photography", qty: 1, price: 0.00 },
-            { desc: "Candid Videography", qty: 1, price: 0.00 },
-            { desc: "Drone", qty: 1, price: 0.00 }
+            { desc: "", qty: 1, price: 0.00 }
         ];
+
+        // Get or initialize next invoice number
+        function getNextInvoiceNo() {
+            let lastNo = localStorage.getItem('click_factory_last_inv');
+            let nextNum = 89;
+            if (lastNo !== null) {
+                nextNum = parseInt(lastNo, 10) + 1;
+            }
+            return String(nextNum).padStart(3, '0');
+        }
+
+        function saveInvoiceNo() {
+            const currentNo = document.getElementById('invoice-no').value;
+            if (currentNo && !isNaN(currentNo)) {
+                localStorage.setItem('click_factory_last_inv', parseInt(currentNo, 10));
+            }
+        }
 
         function renderTable() {
             const tbody = document.getElementById('items-table-body');
@@ -289,13 +313,13 @@
                 tr.innerHTML = `
                     <td class="py-1.5 px-3 text-center font-medium border border-slate-200">${index + 1}</td>
                     <td class="py-1.5 px-3 border border-slate-200">
-                        <input type="text" value="${item.desc}" onchange="updateItem(${index}, 'desc', this.value)" class="w-full font-medium text-slate-800 px-1">
+                        <input type="text" placeholder="Service description..." value="${item.desc}" onchange="updateItem(${index}, 'desc', this.value)" class="w-full font-medium text-slate-800 px-1">
                     </td>
                     <td class="py-1.5 px-2 text-center border border-slate-200">
-                        <input type="number" step="any" value="${item.qty}" onchange="updateItem(${index}, 'qty', this.value)" class="w-full text-center font-medium text-slate-800 px-1">
+                        <input type="number" step="any" placeholder="1" value="${item.qty}" onchange="updateItem(${index}, 'qty', this.value)" class="w-full text-center font-medium text-slate-800 px-1">
                     </td>
                     <td class="py-1.5 px-3 text-right border border-slate-200">
-                        <input type="number" step="any" value="${item.price}" onchange="updateItem(${index}, 'price', this.value)" class="w-full text-right font-medium text-slate-800 px-1">
+                        <input type="number" step="any" placeholder="0.00" value="${item.price}" onchange="updateItem(${index}, 'price', this.value)" class="w-full text-right font-medium text-slate-800 px-1">
                     </td>
                     <td class="py-1.5 px-3 text-right font-bold text-slate-800 border border-slate-200" id="row-total-${index}">
                         ${formatINR(rowTotal)}
@@ -310,7 +334,7 @@
         }
 
         function addItemRow() {
-            initialItems.push({ desc: "New Service / Item", qty: 1, price: 0.00 });
+            initialItems.push({ desc: "", qty: 1, price: 0.00 });
             renderTable();
         }
 
@@ -385,6 +409,7 @@
 
         function toggleDocumentType() {
             const docType = document.getElementById('invoice-title-select').value;
+            const invoiceNoSection = document.getElementById('invoice-no-section');
             const gstSection = document.getElementById('gst-section');
             const paidSection = document.getElementById('paid-section');
             const pendingSection = document.getElementById('pending-section');
@@ -395,6 +420,7 @@
             const footerSignoff = document.getElementById('footer-signoff');
 
             if (docType === 'ACKNOWLEDGEMENT') {
+                invoiceNoSection.classList.add('hidden');
                 gstSection.classList.add('hidden');
                 paidSection.classList.remove('hidden');
                 paidSection.classList.add('flex');
@@ -406,6 +432,7 @@
                 footerChecks.classList.add('hidden');
                 footerSignoff.classList.add('hidden');
             } else {
+                invoiceNoSection.classList.remove('hidden');
                 gstSection.classList.remove('hidden');
                 paidSection.classList.add('hidden');
                 paidSection.classList.remove('flex');
@@ -456,26 +483,31 @@
 
         function resetForm() {
             initialItems = [
-                { desc: "Traditional Photography", qty: 1, price: 18000.00 },
-                { desc: "Traditional Videography", qty: 1, price: 0.00 },
-                { desc: "Candid Photography", qty: 1, price: 0.00 },
-                { desc: "Candid Videography", qty: 1, price: 0.00 },
-                { desc: "Drone", qty: 1, price: 0.00 }
+                { desc: "", qty: 1, price: 0.00 }
             ];
             document.getElementById('invoice-title-select').value = "INVOICE";
             toggleDocumentType();
-            document.getElementById('invoice-date').value = "2026-09-24";
-            document.getElementById('invoice-no').value = "084";
-            document.getElementById('client-name').value = "POOJA & SUBHANKAR";
-            document.getElementById('client-city').value = "CHENNAI";
-            document.getElementById('event-date').value = "EVENT DATE: 13,14 & 15 NOV 2026";
-            document.getElementById('event-desc').value = "EVENT DETAILS: RITUALS, REC & WED";
+            
+            // Set current date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('invoice-date').value = today;
+
+            // Generate next incremental invoice number on reset
+            document.getElementById('invoice-no').value = getNextInvoiceNo();
+
+            document.getElementById('client-name').value = "";
+            document.getElementById('client-city').value = "";
+            document.getElementById('event-date').value = "";
+            document.getElementById('event-desc').value = "";
             document.getElementById('gst-rate').value = "18";
-            document.getElementById('total-paid').value = "10000.00";
+            document.getElementById('total-paid').value = "0.00";
             renderTable();
         }
 
         function downloadPDF() {
+            // Save/increment current invoice number when downloading/printing PDF
+            saveInvoiceNo();
+
             const element = document.getElementById('invoice-sheet');
             const titleType = document.getElementById('invoice-title-select').value;
             const invNo = document.getElementById('invoice-no').value || '000';
@@ -487,11 +519,16 @@
                 html2canvas:  { scale: 2, useCORS: true },
                 jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
-            html2pdf().from(element).set(opt).save();
+            html2pdf().from(element).set(opt).save().then(() => {
+                // Automatically set to the next number after download
+                document.getElementById('invoice-no').value = getNextInvoiceNo();
+            });
         }
 
         window.onload = () => {
-            document.getElementById('invoice-date').value = "2026-09-24";
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('invoice-date').value = today;
+            document.getElementById('invoice-no').value = getNextInvoiceNo();
             renderTable();
             toggleDocumentType();
         };
