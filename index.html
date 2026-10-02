@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click Factory Media Works - Document Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .invoice-container {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 10mm !important;
+                margin: 0 !important;
+                width: 100% !important;
+                max-height: 297mm !important;
+                overflow: hidden !important;
+            }
+            select, input[type="date"] {
+                appearance: none;
+                border: none;
+                background: transparent;
+                padding: 0;
+            }
+        }
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        input, select, textarea {
+            background-color: transparent;
+            border: 1px dashed transparent;
+            transition: all 0.2s;
+        }
+        input:hover, select:hover, textarea:hover, input:focus, select:focus, textarea:focus {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen py-2 sm:py-4 px-2 sm:px-4 font-sans text-slate-800 text-[12px]">
+
+    <!-- Top Action Toolbar (No Print) -->
+    <div class="max-w-4xl mx-auto mb-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 no-print bg-white p-3 rounded-xl shadow-sm border border-slate-200">
+        <div>
+            <h1 class="text-base sm:text-lg font-bold text-blue-900">Click Factory Document Generator</h1>
+            <p class="text-[11px] text-slate-500">Optimized for mobile, printing & PDF export.</p>
+        </div>
+        <div class="flex items-center gap-2 justify-end flex-wrap">
+            <button onclick="resetForm()" class="px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
+                Reset
+            </button>
+            <button onclick="window.print()" class="px-3 py-1.5 text-xs font-medium text-white bg-blue-900 hover:bg-blue-950 rounded-lg shadow transition flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                Print / PDF
+            </button>
+            <button onclick="downloadPDF()" class="px-3 py-1.5 text-xs font-medium text-white bg-blue-700 hover:bg-blue-800 rounded-lg shadow transition flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Download
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Preset Selector (No Print) -->
+    <div class="max-w-4xl mx-auto mb-3 no-print bg-white p-3 rounded-xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+        <span class="text-xs font-bold text-blue-900 uppercase tracking-wide">Quick Add Service:</span>
+        <select id="preset-selector" class="text-xs bg-slate-50 border border-slate-300 rounded-lg p-2 font-medium text-slate-700 flex-1">
+            <optgroup label="Core Services">
+                <option value="Traditional Photography">Traditional Photography</option>
+                <option value="Traditional Videography">Traditional Videography</option>
+                <option value="Candid Photography">Candid Photography</option>
+                <option value="Candid Videography">Candid Videography</option>
+                <option value="Drone">Drone</option>
+            </optgroup>
+            <optgroup label="Addons">
+                <option value="Selfie Booth (Unlimited Print)">Selfie Booth (Unlimited Print)</option>
+                <option value="LED Wall 6x8">LED Wall 6x8</option>
+                <option value="LED Wall 8x10">LED Wall 8x10</option>
+                <option value="360 Video Booth">360 Video Booth</option>
+                <option value="Live Stream">Live Stream</option>
+                <option value="Outdoor Video Shoot">Outdoor Video Shoot</option>
+            </optgroup>
+        </select>
+        <button onclick="addPresetItem()" class="px-3 py-2 bg-blue-900 hover:bg-blue-800 text-white rounded-lg text-xs font-semibold transition text-center">
+            Insert Selected
+        </button>
+    </div>
+
+    <!-- Main Invoice Paper Container -->
+    <div id="invoice-sheet" class="invoice-container max-w-4xl mx-auto bg-white border border-slate-300 shadow-xl rounded-sm p-4 sm:p-8 relative text-[12px] leading-snug">
+        
+        <!-- Header Section -->
+        <div class="flex flex-col sm:flex-row justify-between items-start border-b-2 border-blue-900 pb-4 mb-4 gap-4">
+            <div class="w-full sm:w-3/5">
+                <!-- Company Logo -->
+                <div class="mb-2">
+                    <img src="https://clickfactoryphotography.com/wp-content/uploads/2022/04/crop-logo.gif" alt="Click Factory Logo" class="h-12 object-contain">
+                </div>
+                <h2 class="text-base sm:text-lg font-extrabold tracking-wide uppercase text-blue-950">CLICK FACTORY MEDIA WORKS PRIVATE LIMITED</h2>
+                <p class="text-[11px] text-slate-600 mt-0.5">15/395, Cowl Bazar Main Rd, Moovar Nagar,</p>
+                <p class="text-[11px] text-slate-600">Pozhichalur, Chennai, Tamil Nadu 600074</p>
+                <div class="mt-1.5 text-[11px] text-slate-600 space-y-0.5">
+                    <p class="flex items-center"><strong class="text-slate-700 w-12 inline-block">Phone:</strong> <input type="text" id="comp-phone" value="9677040341" class="font-medium px-1 flex-1 max-w-[200px]"></p>
+                    <p class="flex items-center"><strong class="text-slate-700 w-12 inline-block">Mail:</strong> <input type="text" id="comp-mail" value="theclickfactorypictures@gmail.com" class="font-medium px-1 flex-1 max-w-[280px]"></p>
+                    <p class="flex items-center"><strong class="text-slate-700 w-12 inline-block">GST:</strong> <input type="text" id="comp-gst" value="33AANCC9034G1ZM" class="font-medium px-1 flex-1 max-w-[200px]"></p>
+                </div>
+            </div>
+            <div class="w-full sm:w-2/5 flex flex-col items-start sm:items-end justify-start gap-1.5">
+                <div>
+                    <select id="invoice-title-select" onchange="toggleDocumentType()" class="text-base sm:text-lg font-black tracking-wider text-blue-950 bg-slate-50 border border-slate-300 rounded px-2 py-0.5 text-left sm:text-right">
+                        <option value="INVOICE" selected>INVOICE</option>
+                        <option value="ACKNOWLEDGEMENT">ACKNOWLEDGEMENT</option>
+                        <option value="PROFORMA INVOICE">PROFORMA INVOICE</option>
+                    </select>
+                </div>
+                <div class="text-[11px] space-y-1 w-full max-w-[220px]">
+                    <div class="flex justify-between items-center gap-2">
+                        <span class="font-semibold text-slate-600">DATE:</span>
+                        <input type="date" id="invoice-date" class="font-medium px-1 text-right bg-slate-50 border border-slate-300 rounded">
+                    </div>
+                    <div class="flex justify-between items-center gap-2">
+                        <span class="font-semibold text-slate-600">INVOICE NO.:</span>
+                        <input type="text" id="invoice-no" value="084" class="text-right font-medium px-1 w-24">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bill To / Client Section -->
+        <div class="mb-4 bg-blue-50 p-3 rounded border border-blue-200 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-blue-800 block mb-0.5">TO</span>
+                <input type="text" id="client-name" value="POOJA & SUBHANKAR" class="font-bold text-slate-900 w-full text-sm px-1 mb-0.5">
+                <input type="text" id="client-city" value="CHENNAI" class="text-[11px] text-slate-600 w-full px-1">
+            </div>
+            <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-blue-800 block mb-0.5">EVENT DETAILS</span>
+                <input type="text" id="event-date" value="EVENT DATE: 13,14 & 15 NOV 2026" class="text-[11px] text-slate-700 font-medium w-full px-1 mb-0.5">
+                <input type="text" id="event-desc" value="EVENT DETAILS: RITUALS, REC & WED" class="text-[11px] text-slate-600 w-full px-1">
+            </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="overflow-x-auto mb-4 border border-slate-300 rounded">
+            <table class="w-full border-collapse min-w-[550px]">
+                <thead>
+                    <tr class="bg-blue-950 text-white text-[11px] uppercase tracking-wider">
+                        <th class="py-2 px-3 text-center w-12 border border-blue-950">S.NO</th>
+                        <th class="py-2 px-3 text-left border border-blue-950">DESCRIPTION</th>
+                        <th class="py-2 px-3 text-center w-20 border border-blue-950">QTY</th>
+                        <th class="py-2 px-3 text-right w-32 border border-blue-950">PRICE</th>
+                        <th class="py-2 px-3 text-right w-36 border border-blue-950">TOTAL</th>
+                        <th class="py-2 px-2 text-center w-10 no-print border border-blue-950">ACT</th>
+                    </tr>
+                </thead>
+                <tbody id="items-table-body" class="divide-y divide-slate-200">
+                    <!-- Rows injected dynamically via JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Add Blank Row Button (No Print) -->
+        <div class="mb-4 no-print">
+            <button onclick="addItemRow()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-blue-900 rounded text-xs font-semibold flex items-center gap-1 transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Add Blank Row
+            </button>
+        </div>
+
+        <!-- Totals & Calculations Section -->
+        <div class="flex flex-col sm:flex-row justify-between items-start border-t border-slate-300 pt-3 gap-4">
+            <div class="w-full sm:w-3/5 space-y-2">
+                <div>
+                    <span class="text-[11px] font-bold text-slate-700 block mb-0.5">Amount In Words:</span>
+                    <input type="text" id="amount-words" class="w-full bg-slate-50 border border-slate-200 rounded p-1.5 text-[11px] italic font-medium text-slate-700">
+                </div>
+                
+                <!-- Bank Details -->
+                <div id="bank-details-box" class="bg-blue-50 p-2.5 rounded border border-blue-200 text-[11px] space-y-0.5">
+                    <p class="font-bold text-blue-950">Bank Details</p>
+                    <p><span class="font-semibold">Name:</span> CLICK FACTORY MEDIA WORKS PRIVATE LIMITED</p>
+                    <p><span class="font-semibold">Account No:</span> 251005001855</p>
+                    <p><span class="font-semibold">Bank Name:</span> ICICI Bank</p>
+                    <p><span class="font-semibold">Branch:</span> Pammal, Chennai</p>
+                    <p><span class="font-semibold">IFSC code:</span> ICIC0002510</p>
+                </div>
+
+                <!-- Payment Terms & Conditions -->
+                <div id="terms-box" class="hidden bg-blue-50 p-2.5 rounded border border-blue-200 text-[11px] space-y-0.5">
+                    <p class="font-bold text-blue-950">Payment Terms & Conditions:</p>
+                    <p class="text-slate-600">Kindly go with the payment schedule given under:</p>
+                    <ul class="list-disc list-inside text-slate-700 space-y-0.5 pl-1">
+                        <li>50% of the total amount as Token advance</li>
+                        <li>40% Before One Week For the Event.</li>
+                        <li>10% During Album Delivery.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Summary math -->
+            <div class="w-full sm:w-2/5 space-y-1.5 text-[11px]">
+                <div class="flex justify-between items-center py-1 border-b border-slate-200">
+                    <span class="font-semibold text-slate-600">SUBTOTAL</span>
+                    <span id="subtotal-display" class="font-bold text-slate-800">18,000.00</span>
+                </div>
+
+                <div id="gst-section" class="flex justify-between items-center py-1 border-b border-slate-200">
+                    <div class="flex items-center gap-1">
+                        <span class="font-semibold text-slate-600">GST</span>
+                        <select id="gst-rate" onchange="calculateTotals()" class="bg-slate-100 border border-slate-300 rounded px-1 py-0.5 text-[11px] font-semibold">
+                            <option value="18" selected>18%</option>
+                            <option value="5">5%</option>
+                            <option value="12">12%</option>
+                            <option value="28">28%</option>
+                            <option value="0">0%</option>
+                        </select>
+                    </div>
+                    <span id="gst-display" class="font-bold text-slate-800">3,240.00</span>
+                </div>
+
+                <div id="paid-section" class="hidden justify-between items-center py-1 border-b border-slate-200">
+                    <span class="font-semibold text-slate-600">TOTAL PAID</span>
+                    <input type="number" step="any" id="total-paid" value="10000.00" onchange="calculateTotals()" class="w-28 text-right font-bold text-slate-800 bg-slate-50 border border-slate-300 rounded px-1">
+                </div>
+
+                <div class="flex justify-between items-center py-1.5 text-xs font-extrabold bg-blue-950 text-white px-3 rounded">
+                    <span id="final-label">GRAND TOTAL</span>
+                    <span id="grand-total-display">21,240.00</span>
+                </div>
+
+                <div id="pending-section" class="hidden justify-between items-center py-1 text-[11px] font-bold bg-amber-100 text-amber-900 px-3 rounded border border-amber-200">
+                    <span>PENDING PAYMENT</span>
+                    <span id="pending-display">11,240.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer / Sign-off -->
+        <div class="mt-6 pt-4 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-start text-[11px] text-slate-600 gap-4">
+            <div class="flex-1 space-y-0.5">
+                <p id="footer-checks" class="font-medium text-slate-700">Make all checks payable to click factory photography</p>
+                <p class="text-slate-500">If you have any questions about this document, please contact theclickfactorypictures@gmail.com, +91-9677040341</p>
+                <p class="font-bold text-blue-900 pt-0.5">www.clickfactoryphotography.com</p>
+            </div>
+            <div id="footer-signoff" class="text-right flex-shrink-0 self-end sm:self-auto relative">
+                <p class="mb-1 font-semibold text-slate-700">For Click Factory Media Works Pvt Ltd</p>
+                <div class="h-20 flex justify-end items-center my-[-8px]">
+                    <!-- Links directly to your local signature image file -->
+                    <img src="mysign-removebg-preview.png" alt="Authorised Signature" class="h-20 w-44 object-contain">
+                </div>
+                <p class="font-bold text-slate-900 uppercase">ARUN MATHEW.A</p>
+                <p class="text-[10px] text-slate-500">Authorised Signatory</p>
+            </div>
+        </div>
+
+        <div class="mt-4 pt-2 border-t border-slate-100 text-center">
+            <p class="text-[11px] font-semibold tracking-wide text-slate-500 uppercase italic">Thank You For Your Business!</p>
+        </div>
+
+    </div>
+
+    <!-- Script Logic -->
+    <script>
+        let initialItems = [
+            { desc: "Traditional Photography", qty: 1, price: 18000.00 },
+            { desc: "Traditional Videography", qty: 1, price: 0.00 },
+            { desc: "Candid Photography", qty: 1, price: 0.00 },
+            { desc: "Candid Videography", qty: 1, price: 0.00 },
+            { desc: "Drone", qty: 1, price: 0.00 }
+        ];
+
+        function renderTable() {
+            const tbody = document.getElementById('items-table-body');
+            tbody.innerHTML = '';
+            
+            initialItems.forEach((item, index) => {
+                const rowTotal = (parseFloat(item.qty) || 0) * (parseFloat(item.price) || 0);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="py-1.5 px-3 text-center font-medium border border-slate-200">${index + 1}</td>
+                    <td class="py-1.5 px-3 border border-slate-200">
+                        <input type="text" value="${item.desc}" onchange="updateItem(${index}, 'desc', this.value)" class="w-full font-medium text-slate-800 px-1">
+                    </td>
+                    <td class="py-1.5 px-2 text-center border border-slate-200">
+                        <input type="number" step="any" value="${item.qty}" onchange="updateItem(${index}, 'qty', this.value)" class="w-full text-center font-medium text-slate-800 px-1">
+                    </td>
+                    <td class="py-1.5 px-3 text-right border border-slate-200">
+                        <input type="number" step="any" value="${item.price}" onchange="updateItem(${index}, 'price', this.value)" class="w-full text-right font-medium text-slate-800 px-1">
+                    </td>
+                    <td class="py-1.5 px-3 text-right font-bold text-slate-800 border border-slate-200" id="row-total-${index}">
+                        ${formatINR(rowTotal)}
+                    </td>
+                    <td class="py-1.5 px-2 text-center no-print border border-slate-200">
+                        <button onclick="removeItem(${index})" class="text-rose-500 hover:text-rose-700 font-bold p-1">×</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            calculateTotals();
+        }
+
+        function addItemRow() {
+            initialItems.push({ desc: "New Service / Item", qty: 1, price: 0.00 });
+            renderTable();
+        }
+
+        function addPresetItem() {
+            const selector = document.getElementById('preset-selector');
+            const selectedDesc = selector.value;
+            initialItems.push({ desc: selectedDesc, qty: 1, price: 0.00 });
+            renderTable();
+        }
+
+        function removeItem(index) {
+            if (initialItems.length > 1) {
+                initialItems.splice(index, 1);
+                renderTable();
+            } else {
+                alert("An item list must contain at least one row.");
+            }
+        }
+
+        function updateItem(index, field, value) {
+            if (field === 'qty' || field === 'price') {
+                initialItems[index][field] = parseFloat(value) || 0;
+            } else {
+                initialItems[index][field] = value;
+            }
+            const rowTotal = (parseFloat(initialItems[index].qty) || 0) * (parseFloat(initialItems[index].price) || 0);
+            document.getElementById(`row-total-${index}`).innerText = formatINR(rowTotal);
+            calculateTotals();
+        }
+
+        function formatINR(num) {
+            return num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // Number to Words Converter in Indian Currency Format
+        function convertNumberToWords(amount) {
+            if (isNaN(amount) || amount === 0) return "Zero Rupees Only";
+            
+            const words = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+            const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+
+            function getWord(n) {
+                if (n < 20) return words[n];
+                return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? " " + words[n % 10] : "");
+            }
+
+            let n = Math.floor(amount);
+            let str = "";
+
+            if (n >= 10000000) {
+                str += convertNumberToWords(Math.floor(n / 10000000)) + " Crore ";
+                n %= 10000000;
+            }
+            if (n >= 100000) {
+                str += getWord(Math.floor(n / 100000)) + " Lakh ";
+                n %= 100000;
+            }
+            if (n >= 1000) {
+                str += getWord(Math.floor(n / 1000)) + " Thousand ";
+                n %= 1000;
+            }
+            if (n >= 100) {
+                str += getWord(Math.floor(n / 100)) + " Hundred ";
+                n %= 100;
+            }
+            if (n > 0) {
+                str += getWord(n) + " ";
+            }
+
+            return str.trim() + " Rupees Only";
+        }
+
+        function toggleDocumentType() {
+            const docType = document.getElementById('invoice-title-select').value;
+            const gstSection = document.getElementById('gst-section');
+            const paidSection = document.getElementById('paid-section');
+            const pendingSection = document.getElementById('pending-section');
+            const finalLabel = document.getElementById('final-label');
+            const bankBox = document.getElementById('bank-details-box');
+            const termsBox = document.getElementById('terms-box');
+            const footerChecks = document.getElementById('footer-checks');
+            const footerSignoff = document.getElementById('footer-signoff');
+
+            if (docType === 'ACKNOWLEDGEMENT') {
+                gstSection.classList.add('hidden');
+                paidSection.classList.remove('hidden');
+                paidSection.classList.add('flex');
+                pendingSection.classList.remove('hidden');
+                pendingSection.classList.add('flex');
+                finalLabel.innerText = "TOTAL AMOUNT";
+                bankBox.classList.add('hidden');
+                termsBox.classList.remove('hidden');
+                footerChecks.classList.add('hidden');
+                footerSignoff.classList.add('hidden');
+            } else {
+                gstSection.classList.remove('hidden');
+                paidSection.classList.add('hidden');
+                paidSection.classList.remove('flex');
+                pendingSection.classList.add('hidden');
+                pendingSection.classList.remove('flex');
+                finalLabel.innerText = "GRAND TOTAL";
+                bankBox.classList.remove('hidden');
+                termsBox.classList.add('hidden');
+                footerChecks.classList.remove('hidden');
+                footerSignoff.classList.remove('hidden');
+            }
+            calculateTotals();
+        }
+
+        function calculateTotals() {
+            let subtotal = initialItems.reduce((sum, item) => {
+                const q = parseFloat(item.qty) || 0;
+                const p = parseFloat(item.price) || 0;
+                return sum + (q * p);
+            }, 0);
+            
+            const docType = document.getElementById('invoice-title-select').value;
+            document.getElementById('subtotal-display').innerText = formatINR(subtotal);
+
+            let finalAmount = 0;
+
+            if (docType === 'ACKNOWLEDGEMENT') {
+                const totalPaid = parseFloat(document.getElementById('total-paid').value) || 0;
+                const grandTotal = subtotal; 
+                const pending = Math.max(0, grandTotal - totalPaid);
+
+                document.getElementById('grand-total-display').innerText = formatINR(grandTotal);
+                document.getElementById('pending-display').innerText = formatINR(pending);
+                finalAmount = grandTotal;
+            } else {
+                const gstRate = parseFloat(document.getElementById('gst-rate').value) || 0;
+                let gstAmount = (subtotal * gstRate) / 100;
+                let grandTotal = subtotal + gstAmount;
+
+                document.getElementById('gst-display').innerText = formatINR(gstAmount);
+                document.getElementById('grand-total-display').innerText = formatINR(grandTotal);
+                finalAmount = grandTotal;
+            }
+
+            // Auto-fill Amount in Words
+            document.getElementById('amount-words').value = convertNumberToWords(finalAmount);
+        }
+
+        function resetForm() {
+            initialItems = [
+                { desc: "Traditional Photography", qty: 1, price: 18000.00 },
+                { desc: "Traditional Videography", qty: 1, price: 0.00 },
+                { desc: "Candid Photography", qty: 1, price: 0.00 },
+                { desc: "Candid Videography", qty: 1, price: 0.00 },
+                { desc: "Drone", qty: 1, price: 0.00 }
+            ];
+            document.getElementById('invoice-title-select').value = "INVOICE";
+            toggleDocumentType();
+            document.getElementById('invoice-date').value = "2026-09-24";
+            document.getElementById('invoice-no').value = "084";
+            document.getElementById('client-name').value = "POOJA & SUBHANKAR";
+            document.getElementById('client-city').value = "CHENNAI";
+            document.getElementById('event-date').value = "EVENT DATE: 13,14 & 15 NOV 2026";
+            document.getElementById('event-desc').value = "EVENT DETAILS: RITUALS, REC & WED";
+            document.getElementById('gst-rate').value = "18";
+            document.getElementById('total-paid').value = "10000.00";
+            renderTable();
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('invoice-sheet');
+            const titleType = document.getElementById('invoice-title-select').value;
+            const invNo = document.getElementById('invoice-no').value || '000';
+            const client = document.getElementById('client-name').value || 'Client';
+            const opt = {
+                margin:      5,
+                filename:    `${titleType}_${invNo}_${client}.pdf`,
+                image:       { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().from(element).set(opt).save();
+        }
+
+        window.onload = () => {
+            document.getElementById('invoice-date').value = "2026-09-24";
+            renderTable();
+            toggleDocumentType();
+        };
+    </script>
+</body>
+</html>
