@@ -23,28 +23,39 @@
                 padding: 10mm !important;
                 margin: 0 !important;
                 width: 100% !important;
-                max-height: 297mm !important;
-                overflow: hidden !important;
+                height: auto !important;
+                overflow: visible !important;
             }
-            select, input[type="date"] {
-                appearance: none;
-                border: none;
-                background: transparent;
-                padding: 0;
+            tr {
+                page-break-inside: avoid !important;
+            }
+            .totals-section, .footer-section {
+                page-break-inside: avoid !important;
+            }
+            select, input[type="date"], input[type="text"], input[type="number"], textarea {
+                appearance: none !important;
+                border: none !important;
+                background: transparent !important;
+                box-shadow: none !important;
+                outline: none !important;
+                padding: 0 !important;
             }
         }
+        
         * {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
         }
         input, select, textarea {
-            background-color: transparent;
-            border: 1px dashed transparent;
+            background-color: #ffffff;
+            border: 1px dashed #cbd5e1;
             transition: all 0.2s;
+            resize: none;
+            overflow: hidden;
         }
         input:hover, select:hover, textarea:hover, input:focus, select:focus, textarea:focus {
             background-color: #f8fafc;
-            border-color: #cbd5e1;
+            border-color: #94a3b8;
         }
         /* Style for placeholders to be subtle */
         ::placeholder {
@@ -109,9 +120,9 @@
             <div class="w-full sm:w-3/5">
                 <!-- Company Logo -->
                 <div class="mb-2">
-                    <img src="https://clickfactoryphotography.com/wp-content/uploads/2022/04/crop-logo.gif" alt="Click Factory Logo" class="h-12 object-contain">
+                    <img src="https://clickfactoryphotography.com/wp-content/uploads/2022/04/crop-logo.gif" alt="Click Factory Logo" class="h-10 sm:h-12 object-contain">
                 </div>
-                <h2 class="text-base sm:text-lg font-extrabold tracking-wide uppercase text-blue-950">CLICK FACTORY MEDIA WORKS PRIVATE LIMITED</h2>
+                <h2 class="text-sm sm:text-base font-extrabold tracking-wide uppercase text-blue-950">CLICK FACTORY MEDIA WORKS PRIVATE LIMITED</h2>
                 <p class="text-[11px] text-slate-600 mt-0.5">15/395, Cowl Bazar Main Rd, Moovar Nagar,</p>
                 <p class="text-[11px] text-slate-600">Pozhichalur, Chennai, Tamil Nadu 600074</p>
                 <div class="mt-1.5 text-[11px] text-slate-600 space-y-0.5">
@@ -121,8 +132,8 @@
                 </div>
             </div>
             <div class="w-full sm:w-2/5 flex flex-col items-start sm:items-end justify-start gap-1.5">
-                <div>
-                    <select id="invoice-title-select" onchange="toggleDocumentType()" class="text-base sm:text-lg font-black tracking-wider text-blue-950 bg-slate-50 border border-slate-300 rounded px-2 py-0.5 text-left sm:text-right">
+                <div class="w-full sm:w-auto">
+                    <select id="invoice-title-select" onchange="toggleDocumentType()" class="text-sm sm:text-base font-black tracking-wider text-blue-950 bg-blue-50 border border-blue-300 rounded px-2 py-1.5 w-full sm:w-60 text-left sm:text-right">
                         <option value="INVOICE" selected>INVOICE</option>
                         <option value="ACKNOWLEDGEMENT">ACKNOWLEDGEMENT</option>
                         <option value="PROFORMA INVOICE">PROFORMA INVOICE</option>
@@ -143,20 +154,20 @@
 
         <!-- Bill To / Client Section -->
         <div class="mb-4 bg-blue-50 p-3 rounded border border-blue-200 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-            <div>
+            <div class="space-y-1">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-blue-800 block mb-0.5">TO</span>
-                <input type="text" id="client-name" placeholder="client name" class="font-bold text-slate-900 w-full text-sm px-1 mb-0.5">
-                <input type="text" id="client-city" placeholder="client place" class="text-[11px] text-slate-600 w-full px-1">
+                <textarea id="client-name" rows="1" oninput="autoResize(this)" placeholder="client name" class="font-bold text-slate-900 w-full text-sm px-1 py-0.5 rounded"></textarea>
+                <textarea id="client-city" rows="1" oninput="autoResize(this)" placeholder="client address / place" class="text-[11px] text-slate-600 w-full px-1 py-0.5 rounded"></textarea>
             </div>
             <div class="space-y-1">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-blue-800 block mb-0.5">EVENT DETAILS</span>
-                <div class="flex items-center gap-1 text-[11px]">
-                    <strong class="text-slate-700 w-20 flex-shrink-0">Event Date:</strong>
-                    <input type="text" id="event-date" placeholder="event date" class="font-medium text-slate-700 w-full px-1 bg-white/50 border border-slate-200 rounded">
+                <div class="flex items-start gap-1 text-[11px]">
+                    <strong class="text-slate-700 w-20 flex-shrink-0 pt-0.5">Event Date:</strong>
+                    <textarea id="event-date" rows="1" oninput="autoResize(this)" placeholder="event date" class="font-medium text-slate-700 w-full px-1 bg-white border border-slate-200 rounded py-0.5"></textarea>
                 </div>
-                <div class="flex items-center gap-1 text-[11px]">
-                    <strong class="text-slate-700 w-20 flex-shrink-0">Event Details:</strong>
-                    <input type="text" id="event-desc" placeholder="event details" class="font-medium text-slate-600 w-full px-1 bg-white/50 border border-slate-200 rounded">
+                <div class="flex items-start gap-1 text-[11px]">
+                    <strong class="text-slate-700 w-20 flex-shrink-0 pt-0.5">Event Details:</strong>
+                    <textarea id="event-desc" rows="1" oninput="autoResize(this)" placeholder="event details" class="font-medium text-slate-600 w-full px-1 bg-white border border-slate-200 rounded py-0.5"></textarea>
                 </div>
             </div>
         </div>
@@ -189,7 +200,7 @@
         </div>
 
         <!-- Totals & Calculations Section -->
-        <div class="flex flex-col sm:flex-row justify-between items-start border-t border-slate-300 pt-3 gap-4">
+        <div class="totals-section flex flex-col sm:flex-row justify-between items-start border-t border-slate-300 pt-3 gap-4">
             <div class="w-full sm:w-3/5 space-y-2">
                 <div>
                     <span class="text-[11px] font-bold text-slate-700 block mb-0.5">Amount In Words:</span>
@@ -257,7 +268,7 @@
         </div>
 
         <!-- Footer / Sign-off -->
-        <div class="mt-6 pt-4 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-start text-[11px] text-slate-600 gap-4">
+        <div class="footer-section mt-6 pt-4 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-start text-[11px] text-slate-600 gap-4">
             <div class="flex-1 space-y-0.5">
                 <p id="footer-checks" class="font-medium text-slate-700">Make all checks payable to click factory photography</p>
                 <p class="text-slate-500">If you have any questions about this document, please contact theclickfactorypictures@gmail.com, +91-9677040341</p>
@@ -286,7 +297,12 @@
             { desc: "", qty: 1, price: 0.00 }
         ];
 
-        // Get or initialize next invoice number
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
+        // Get or initialize next invoice number starting at 089
         function getNextInvoiceNo() {
             let lastNo = localStorage.getItem('click_factory_last_inv');
             let nextNum = 89;
@@ -499,28 +515,96 @@
             document.getElementById('client-city').value = "";
             document.getElementById('event-date').value = "";
             document.getElementById('event-desc').value = "";
+            
+            // Reset textareas height
+            document.querySelectorAll('textarea').forEach(el => autoResize(el));
+
             document.getElementById('gst-rate').value = "18";
             document.getElementById('total-paid').value = "0.00";
             renderTable();
         }
 
         function downloadPDF() {
-            // Save/increment current invoice number when downloading/printing PDF
             saveInvoiceNo();
 
+            const selectEl = document.getElementById('invoice-title-select');
+            const parentEl = selectEl.parentNode;
+            
+            // Temporarily replace <select> with a text div
+            const textDiv = document.createElement('div');
+            textDiv.id = 'temp-title-display';
+            textDiv.className = selectEl.className;
+            textDiv.style.display = 'flex';
+            textDiv.style.alignItems = 'center';
+            textDiv.style.justifyContent = 'flex-end';
+            textDiv.style.fontWeight = '900';
+            textDiv.style.fontSize = '1.125rem';
+            textDiv.style.letterSpacing = '0.05em';
+            textDiv.style.color = '#172554';
+            textDiv.style.border = 'none';
+            textDiv.style.background = 'transparent';
+            textDiv.innerText = selectEl.value;
+            parentEl.replaceChild(textDiv, selectEl);
+
+            // Temporarily replace textareas with wrapping <div> elements
+            const textareas = document.querySelectorAll('#invoice-sheet textarea');
+            const textareaReplacements = [];
+            textareas.forEach(textarea => {
+                const div = document.createElement('div');
+                div.className = textarea.className;
+                div.style.border = 'none';
+                div.style.background = 'transparent';
+                div.style.whiteSpace = 'pre-wrap';
+                div.style.wordBreak = 'break-word';
+                div.style.overflow = 'visible';
+                div.style.height = 'auto';
+                div.style.width = '100%';
+                div.innerText = textarea.value;
+                
+                textarea.style.display = 'none';
+                textarea.parentNode.insertBefore(div, textarea);
+                textareaReplacements.push({ textarea, div });
+            });
+
+            // Temporarily remove borders from all text inputs
+            const inputs = document.querySelectorAll('#invoice-sheet input[type="text"], #invoice-sheet input[type="number"], #invoice-sheet input[type="date"]');
+            inputs.forEach(input => {
+                input.dataset.oldBorder = input.style.border;
+                input.dataset.oldBg = input.style.backgroundColor;
+                input.style.border = 'none';
+                input.style.backgroundColor = 'transparent';
+            });
+
             const element = document.getElementById('invoice-sheet');
-            const titleType = document.getElementById('invoice-title-select').value;
+            const client = (document.getElementById('client-name').value || 'CLIENT').trim();
+            const docType = selectEl.value;
             const invNo = document.getElementById('invoice-no').value || '000';
-            const client = document.getElementById('client-name').value || 'Client';
+            
+            const fileName = docType === 'ACKNOWLEDGEMENT' 
+                ? `${client}-${docType}.pdf`.replace(/[\/\\?%*:|"<>]/g, '')
+                : `${client}-${docType} NO ${invNo}.pdf`.replace(/[\/\\?%*:|"<>]/g, '');
+
             const opt = {
                 margin:      5,
-                filename:    `${titleType}_${invNo}_${client}.pdf`,
+                filename:    fileName,
                 image:       { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, useCORS: true },
                 jsPDF:       { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
+
             html2pdf().from(element).set(opt).save().then(() => {
-                // Automatically set to the next number after download
+                parentEl.replaceChild(selectEl, textDiv);
+                
+                textareaReplacements.forEach(({ textarea, div }) => {
+                    div.remove();
+                    textarea.style.display = '';
+                });
+
+                inputs.forEach(input => {
+                    input.style.border = input.dataset.oldBorder || '';
+                    input.style.backgroundColor = input.dataset.oldBg || '';
+                });
+
                 document.getElementById('invoice-no').value = getNextInvoiceNo();
             });
         }
@@ -531,6 +615,8 @@
             document.getElementById('invoice-no').value = getNextInvoiceNo();
             renderTable();
             toggleDocumentType();
+            
+            document.querySelectorAll('textarea').forEach(el => autoResize(el));
         };
     </script>
 </body>
