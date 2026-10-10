@@ -57,6 +57,7 @@
             background-color: #f8fafc;
             border-color: #94a3b8;
         }
+        /* Style for placeholders to be subtle */
         ::placeholder {
             color: #94a3b8;
             opacity: 1;
@@ -181,7 +182,7 @@
                         <th class="py-2 px-3 text-center w-20 border border-blue-950">QTY</th>
                         <th class="py-2 px-3 text-right w-32 border border-blue-950">PRICE</th>
                         <th class="py-2 px-3 text-right w-36 border border-blue-950">TOTAL</th>
-                        <th class="py-2 px-2 text-center w-10 no-print border border-blue-950 action-col">ACT</th>
+                        <th class="py-2 px-2 text-center w-10 no-print border border-blue-950">ACT</th>
                     </tr>
                 </thead>
                 <tbody id="items-table-body" class="divide-y divide-slate-200">
@@ -339,7 +340,7 @@
                     <td class="py-1.5 px-3 text-right font-bold text-slate-800 border border-slate-200" id="row-total-${index}">
                         ${formatINR(rowTotal)}
                     </td>
-                    <td class="py-1.5 px-2 text-center no-print border border-slate-200 action-col">
+                    <td class="py-1.5 px-2 text-center no-print border border-slate-200">
                         <button onclick="removeItem(${index})" class="text-rose-500 hover:text-rose-700 font-bold p-1">×</button>
                     </td>
                 `;
@@ -574,9 +575,9 @@
                 input.style.backgroundColor = 'transparent';
             });
 
-            // Temporarily hide action elements for PDF generation
-            const actionElements = document.querySelectorAll('.action-col');
-            actionElements.forEach(el => el.style.display = 'none');
+            // Hide the ACT column cells and header during PDF generation
+            const noPrintElements = document.querySelectorAll('#invoice-sheet .no-print');
+            noPrintElements.forEach(el => el.style.display = 'none');
 
             const element = document.getElementById('invoice-sheet');
             const client = (document.getElementById('client-name').value || 'CLIENT').trim();
@@ -608,7 +609,7 @@
                     input.style.backgroundColor = input.dataset.oldBg || '';
                 });
 
-                actionElements.forEach(el => el.style.display = '');
+                noPrintElements.forEach(el => el.style.display = '');
 
                 document.getElementById('invoice-no').value = getNextInvoiceNo();
             });
